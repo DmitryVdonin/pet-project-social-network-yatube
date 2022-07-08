@@ -265,9 +265,6 @@ class PostImageTest(TestCase):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
-    def tearDown(self):
-        cache.clear()
-
     def test_image_in_context_for_index_group_post_profile(self):
         """Загружаемая пользователем картинка передаётся в контекст.
 
