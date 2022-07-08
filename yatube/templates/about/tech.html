@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Технологии{% endblock %}
+{% load static %}
+{% block content %}
+  <div class="row">
+    <h1>Технологии</h1>
+    <aside class="col-12 col-md-3">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <a href="https://www.python.org/">
+            <img src="{% static 'img/Python.png' %}"
+            width="30"
+            height="30"
+            class="d-inline-block align-top"
+            alt="">
+            Python
+          </a>  
+        </li>
+        <li class="list-group-item">
+          <a href="https://www.djangoproject.com/">
+            <img src="{% static 'img/django.png' %}"
+            width="30"
+            height="30"
+            class="d-inline-block align-top"
+            alt="">
+            Django
+          </a>
+        </li>
+        <li class="list-group-item">
+          <a href="https://getbootstrap.com/">
+            <img src="{% static 'img/bootstrap-logo-shadow.png' %}"
+            width="30"
+            height="30"
+            class="d-inline-block align-top"
+            alt="">
+            Bootstrap
+          </a>
+        </li>
+      </ul>
+    </aside>
+    <article class="col-12 col-md-9">
+      <p>Проект написан на фрэймворке Django v.2.2.9.
+        Для верстки сайта применён фрэймворк Bootstrap v.5.2.</p>
+    </article>
+  </div>
+{% endblock %}

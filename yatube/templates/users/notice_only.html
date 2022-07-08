@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Уведомление{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 p-5">
+    <div class="card">
+      <div class="card-header">
+        {% block name %}
+        {% endblock %}
+      </div>
+      <div class="card-body">
+        <p>
+          {% block definition %}
+          {% endblock %}
+        </p>
+        <p>
+          {% block optional %}
+          {% endblock %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

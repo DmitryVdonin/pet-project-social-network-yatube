@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+  {% load static %}
+  <h1>Об авторах проекта</h1>
+  <article class = "py-3">
+    <img src="{% static 'img/beat.png' %}"
+      width="20%" 
+      class="d-inline-block align-top"
+      alt="">
+    <div>В проекте принимали участие:
+      <ul>
+        <li>Джон</li>
+        <li>Пол</li>
+        <li>Джордж</li>
+        <li>Ринго</li>
+      </ul>
+    </div>
+</article>
+  <img src="{% static 'img/peace.jpg' %}"
+    width="100%" 
+    class="center py-3"
+    alt="">
+  <h3 class = "text-center py-5"> n&#248t war </h3>
+{% endblock %}
