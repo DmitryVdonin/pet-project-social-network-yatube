@@ -5,7 +5,7 @@ from django.views.decorators.cache import cache_page
 
 from .constants import CACHE_TIME_INDEX_PAGE
 from .forms import CommentForm, PostForm
-from .models import Comment, Follow, Group, Post
+from .models import Follow, Group, Post
 from .utils import divider_per_page
 
 User = get_user_model()
