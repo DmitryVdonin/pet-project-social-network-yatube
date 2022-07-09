@@ -26,7 +26,7 @@ class PostFormTests(TestCase):
             description='тестовое описание',
             slug='test_slug',
         )
-        Post.objects.create(
+        cls.post = Post.objects.create(
             text='какой-то текст',
             author=cls.user,
             group=cls.group,
@@ -46,7 +46,7 @@ class PostFormTests(TestCase):
 
     def setUp(self):
         self.authorized_client_author = Client()
-        self.authorized_client_author.force_login(PostFormTests.user)
+        self.authorized_client_author.force_login(self.user)
 
     def test_authorized_author_create_post_by_form_in_create_page(self):
         """Форма в шаблоне create создает запись в модели Post.
@@ -75,9 +75,9 @@ class PostFormTests(TestCase):
             kwargs={'username': 'test_user'}
         ))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        post = Post.objects.get(text='тестовый текст')
-        self.assertEqual(post.author, PostFormTests.user)
-        self.assertEqual(post.group, PostFormTests.group)
+        post = Post.objects.first()
+        self.assertEqual(post.author, self.user)
+        self.assertEqual(post.group, self.group)
         self.assertEqual(post.image, 'posts/small.gif')
 
     def test_authorized_post_author_edit_his_post(self):
@@ -88,13 +88,13 @@ class PostFormTests(TestCase):
         """
         uploaded = SimpleUploadedFile(
             name='new.gif',
-            content=PostFormTests.small_gif,
+            content=self.small_gif,
             content_type='image/gif',
         )
         post_count = Post.objects.count()
         form_data = {
             'text': 'новый текст',
-            'group': PostFormTests.group.id,
+            'group': self.group.id,
             'image': uploaded,
         }
         response = self.authorized_client_author.post(
@@ -108,16 +108,16 @@ class PostFormTests(TestCase):
         ))
         self.assertEqual(Post.objects.count(), post_count)
         post = Post.objects.get(id=1)
-        self.assertEqual(post.text, 'новый текст')
-        self.assertEqual(post.author, PostFormTests.user)
-        self.assertEqual(post.group, PostFormTests.group)
+        self.assertEqual(post.text, form_data['text'])
+        self.assertEqual(post.author, self.user)
+        self.assertEqual(post.group, self.group)
         self.assertEqual(post.image, 'posts/new.gif')
 
     def test_unauthorized_user_tries_create_post(self):
         """Неавторизированный пользователь не может добавить запись."""
         form_data = {
             'text': 'текст не должен появиться',
-            'group': PostFormTests.group.id,
+            'group': self.group.id,
         }
         response = self.client.post(
             reverse('posts:post_create'),
@@ -130,7 +130,7 @@ class PostFormTests(TestCase):
         )
         self.assertFalse(
             Post.objects.filter(
-                text='текст не должен появиться'
+                text=form_data['text']
             ).exists()
         )
 
@@ -150,7 +150,7 @@ class CommentFormTest(TestCase):
             description='тестовое описание',
             slug='test_slug',
         )
-        Post.objects.create(
+        cls.post = Post.objects.create(
             text='какой-то текст',
             author=cls.user_post_author,
             group=cls.group,
@@ -158,40 +158,41 @@ class CommentFormTest(TestCase):
 
     def test_authorized_user_adds_comment(self):
         """Автризированный пользователь может оставлять комментарий."""
-        self.authorized_user = Client()
-        self.authorized_user.force_login(CommentFormTest.user_not_post_author)
-        comments_count = Comment.objects.filter(post=1).count()
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user_not_post_author)
+        comments_count = self.post.comments.count()
         form_data = {
             'text': 'тестовый комментарий',
         }
-        self.authorized_user.post(
-            reverse('posts:add_comment', kwargs={'post_id': 1}),
+        self.authorized_client.post(
+            reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
         )
-        comment = Comment.objects.get(text='тестовый комментарий')
+        comment = Comment.objects.first()
         self.assertEqual(
-            Comment.objects.filter(post=1).count(),
+            self.post.comments.count(),
             comments_count + 1
         )
-        self.assertEqual(comment.author.username, 'test_user_2')
-        self.assertEqual(comment.post.text, 'какой-то текст')
+        self.assertEqual(comment.text, form_data['text'])
+        self.assertEqual(comment.author, self.user_not_post_author)
+        self.assertEqual(comment.post, self.post)
 
     def test_unauthorized_user_tries_add_comment(self):
         """Неавторизированный пользователь не может оставить комментарий."""
-        comments_count = Comment.objects.filter(post=1).count()
+        comments_count = self.post.comments.count()
         form_data = {
             'text': 'текст не должен появиться',
         }
         self.client.post(
-            reverse('posts:add_comment', kwargs={'post_id': 1}),
+            reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
         )
         self.assertEqual(
             comments_count,
-            Comment.objects.filter(post=1).count()
+            self.post.comments.count()
         )
         self.assertFalse(
-            Comment.objects.filter(text='текст не должен появиться').exists()
+            Comment.objects.filter(text=form_data['text']).exists()
         )

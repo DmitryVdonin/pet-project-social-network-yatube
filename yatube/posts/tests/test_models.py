@@ -25,8 +25,8 @@ class PostGroupModelTest(TestCase):
         )
 
     def setUp(self):
-        self.post = PostGroupModelTest.post
-        self.group = PostGroupModelTest.group
+        self.post = self.post
+        self.group = self.group
 
     def test_models_have_correct_object_names(self):
         """Проверяем, что у моделей корректно работает __str__."""

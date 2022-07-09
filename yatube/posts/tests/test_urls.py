@@ -27,7 +27,7 @@ class PostGroupUrlTest(TestCase):
             slug='test_slug',
             description='тестовое описание',
         )
-        Post.objects.create(
+        cls.post = Post.objects.create(
             author=cls.user_author,
             text='тестовый текст',
             group=cls.group,
@@ -36,11 +36,11 @@ class PostGroupUrlTest(TestCase):
     def setUp(self):
         self.authorized_client_post_author = Client()
         self.authorized_client_post_author.force_login(
-            PostGroupUrlTest.user_author,
+            self.user_author,
         )
         self.authorized_client_not_author = Client()
         self.authorized_client_not_author.force_login(
-            PostGroupUrlTest.user_not_author,
+            self.user_not_author,
         )
 
     def tearDown(self):
@@ -54,9 +54,9 @@ class PostGroupUrlTest(TestCase):
         страница вызывает ошибку 404.
         """
         url_status_code_response = {
-            '/posts/1/': HTTPStatus.OK,
-            '/profile/test_user_author/': HTTPStatus.OK,
-            '/group/test_slug/': HTTPStatus.OK,
+            f'/posts/{self.post.id}/': HTTPStatus.OK,
+            f'/profile/{self.user_author.username}/': HTTPStatus.OK,
+            f'/group/{self.group.slug}/': HTTPStatus.OK,
             '': HTTPStatus.OK,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
         }
@@ -73,7 +73,7 @@ class PostGroupUrlTest(TestCase):
         автору.
         """
         url_tupple = (
-            '/posts/1/edit/',
+            f'/posts/{self.post.id}/edit/',
             '/create/',
             '/follow/',
         )
@@ -89,7 +89,8 @@ class PostGroupUrlTest(TestCase):
         пользователя на страницу логина.
         """
         url_redirect_address = {
-            '/posts/1/edit/': '/auth/login/?next=/posts/1/edit/',
+            f'/posts/{self.post.id}/edit/':
+            f'/auth/login/?next=/posts/{self.post.id}/edit/',
             '/create/': '/auth/login/?next=/create/',
         }
         for desired_address, redirect_address in url_redirect_address.items():
@@ -103,16 +104,18 @@ class PostGroupUrlTest(TestCase):
         Страница /posts/1/edit/ перенаправляет авторизированного пользователя,
         не автора поста на страницу /posts/1/.
         """
-        response = self.authorized_client_not_author.get('/posts/1/edit/')
-        self.assertRedirects(response, '/posts/1/')
+        response = self.authorized_client_not_author.get(
+            f'/posts/{self.post.id}/edit/'
+        )
+        self.assertRedirects(response, f'/posts/{self.post.id}/')
 
     def test_urls_use_correct_templates(self):
         """URL-адрес использует соотетствующий шаблон."""
         url_names_templates = {
-            '/posts/1/edit/': 'posts/create_post.html',
-            '/posts/1/': 'posts/post_detail.html',
-            '/profile/test_user_author/': 'posts/profile.html',
-            '/group/test_slug/': 'posts/group_list.html',
+            f'/posts/{self.post.id}/edit/': 'posts/create_post.html',
+            f'/posts/{self.post.id}/': 'posts/post_detail.html',
+            f'/profile/{self.user_author.username}/': 'posts/profile.html',
+            f'/group/{self.group.slug}/': 'posts/group_list.html',
             '/create/': 'posts/create_post.html',
             '': 'posts/index.html',
             '/unexisting_page/': 'core/404.html',
