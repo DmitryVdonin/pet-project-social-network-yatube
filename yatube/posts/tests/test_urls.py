@@ -31,7 +31,7 @@ class PostGroupUrlTest(TestCase):
             author=cls.user_author,
             text='тестовый текст',
             group=cls.group,
-        )
+        )        
 
     def setUp(self):
         self.authorized_client_post_author = Client()
@@ -88,10 +88,12 @@ class PostGroupUrlTest(TestCase):
         Страницы /posts/1/edit/, /create/ перенаправляют неавторизировнного
         пользователя на страницу логина.
         """
+        edit_page = f'/posts/{self.post.id}/edit/'
+        create_page = '/create/'
+        next = '/auth/login/?next='
         url_redirect_address = {
-            f'/posts/{self.post.id}/edit/':
-            f'/auth/login/?next=/posts/{self.post.id}/edit/',
-            '/create/': '/auth/login/?next=/create/',
+            edit_page: next + edit_page,
+            create_page: next + create_page,
         }
         for desired_address, redirect_address in url_redirect_address.items():
             with self.subTest(desired_address=desired_address):

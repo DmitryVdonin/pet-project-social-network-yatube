@@ -57,12 +57,12 @@ class PostFormTests(TestCase):
         post_count = Post.objects.count()
         uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=PostFormTests.small_gif,
+            content=self.small_gif,
             content_type='image/gif',
         )
         form_data = {
             'text': 'тестовый текст',
-            'group': PostFormTests.group.id,
+            'group': self.group.id,
             'image': uploaded,
         }
         response = self.authorized_client_author.post(
@@ -76,8 +76,9 @@ class PostFormTests(TestCase):
         ))
         self.assertEqual(Post.objects.count(), post_count + 1)
         post = Post.objects.first()
+        self.assertEqual(post.text, form_data['text'])
         self.assertEqual(post.author, self.user)
-        self.assertEqual(post.group, self.group)
+        self.assertEqual(post.group.id, form_data['group'])
         self.assertEqual(post.image, 'posts/small.gif')
 
     def test_authorized_post_author_edit_his_post(self):
@@ -98,23 +99,24 @@ class PostFormTests(TestCase):
             'image': uploaded,
         }
         response = self.authorized_client_author.post(
-            reverse('posts:post_edit', kwargs={'post_id': 1}),
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True,
         )
         self.assertRedirects(response, reverse(
             'posts:post_detail',
-            kwargs={'post_id': 1},
+            kwargs={'post_id': self.post.id},
         ))
         self.assertEqual(Post.objects.count(), post_count)
-        post = Post.objects.get(id=1)
+        post = Post.objects.get(id=self.post.id)
         self.assertEqual(post.text, form_data['text'])
         self.assertEqual(post.author, self.user)
-        self.assertEqual(post.group, self.group)
+        self.assertEqual(post.group.id, form_data['group'])
         self.assertEqual(post.image, 'posts/new.gif')
 
     def test_unauthorized_user_tries_create_post(self):
         """Неавторизированный пользователь не может добавить запись."""
+        post_count = Post.objects.count()
         form_data = {
             'text': 'текст не должен появиться',
             'group': self.group.id,
@@ -128,11 +130,7 @@ class PostFormTests(TestCase):
             response,
             reverse('users:login') + '?next=/create/'
         )
-        self.assertFalse(
-            Post.objects.filter(
-                text=form_data['text']
-            ).exists()
-        )
+        self.assertEqual(post_count, Post.objects.count())
 
 
 class CommentFormTest(TestCase):

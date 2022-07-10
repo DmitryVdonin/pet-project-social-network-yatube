@@ -58,6 +58,7 @@ class PostGroupPagesTest(TestCase):
 
         Самостоятельно не вызывается, только из других методов.
         """
+        self.assertEqual(post.id, self.post.id)
         self.assertEqual(post.text, self.post.text)
         self.assertEqual(post.author, self.user_author)
         self.assertEqual(post.group, self.group)
@@ -71,7 +72,7 @@ class PostGroupPagesTest(TestCase):
                 'posts/post_detail.html',
             reverse(
                 'posts:profile',
-                kwargs={'username': self.user_author.username}
+                kwargs={'username': self.user_author.username},
             ):
                 'posts/profile.html',
             reverse('posts:group_posts', kwargs={'slug': self.group.slug}):
@@ -96,7 +97,7 @@ class PostGroupPagesTest(TestCase):
             reverse('posts:group_posts', kwargs={'slug': self.group.slug}),
             reverse(
                 'posts:profile',
-                kwargs={'username': self.user_author.username}
+                kwargs={'username': self.user_author.username},
             ),
         )
         for page_name in page_names_tupple:

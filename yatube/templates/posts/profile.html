@@ -10,7 +10,7 @@
       Подписчиков: {{ author.following.count }}<br>
       Всего постов: {{ author.posts.count }}
     </h3>
-    {% if request.user != author %}
+    {% if request.user.is_authenticated and request.user != author %}
       {% if following %}
         <a
           class="btn btn-lg btn-light"
