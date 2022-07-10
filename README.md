@@ -1,4 +1,4 @@
-# yatube_projectsocial network with blogs and diaries
+# yatube_project: social network with blogs and diaries
 ### Описание
 В этой социальной сети можно публиковать свои блоги: заметки, дневники и статьи. А так же читать блоги других людей и создавать сообщества с блогами по интересам
 ### Технологии
