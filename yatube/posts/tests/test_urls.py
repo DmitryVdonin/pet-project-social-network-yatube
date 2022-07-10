@@ -31,7 +31,7 @@ class PostGroupUrlTest(TestCase):
             author=cls.user_author,
             text='тестовый текст',
             group=cls.group,
-        )        
+        )
 
     def setUp(self):
         self.authorized_client_post_author = Client()
