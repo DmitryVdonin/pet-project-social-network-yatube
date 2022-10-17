@@ -1,31 +1,34 @@
 # yatube_project: social network with blogs and diaries
 ## http://dmitryvdonin.pythonanywhere.com/
-### Описание
-В этой социальной сети можно публиковать свои блоги: заметки, дневники и статьи. А так же читать блоги других людей и создавать сообщества с блогами по интересам
-### Технологии
+### Description
+In this social network you can publish your blogs: notes, diaries and articles. Also you can read other people's blogs and create communities with blogs according to your interest
+### Technologies
 - Python 3.7
 - Django 2.2.19
 - Bootstrap v.5.2
-### Запуск проекта в dev-режиме
-- Установите и активируйте виртуальное окружение
-- Установите зависимости из файла requirements.txt
+### Running a project in dev mode
+- Install and activate the virtual environment
+- Install dependencies from requirements.txt file
 ```
 pip install -r requirements.txt
 ``` 
-- Выполните миграции. В папке с файлом manage.py выполните команду:
+- Run the migrations. In the folder with the manage.py file, run the command:
+
 ```
  python3.manage.py migtate (windows: py.manage.py migtate)
  ```
-- Запустите сервер разработчика. В папке с файлом manage.py выполните команду:
+- Start the developer server. In the folder with the manage.py file, run the command:
+
 ```
 python3 manage.py runserver (windows: py manage.py runserver)
 ```
-### Администрирование и особенности
-- Для администрирования проекта создайте суперпользователя. В папке с файлом manage.py выполните команду:
+### Administration and Features
+- Create a superuser to administer the project. In the folder with the manage.py file, run the command:
+
 ```
 python3 manage.py createsuperuser (windows: py manage.py createsuperuser)
 ```
-- Админ-зона расположена по относительному адреу /admin/
-- Создание групп в проекте возможно только для администратора в админ-зоне
-### Авторы
-Дмитрий Вдонин
+- The admin area is located at the relative address /admin/
+- Creation of groups in the project is possible only for the administrator in the admin area
+### Authors
+Dmitry Vdonin
